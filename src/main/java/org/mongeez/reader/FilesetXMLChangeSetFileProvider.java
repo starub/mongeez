@@ -10,18 +10,19 @@
 
 package org.mongeez.reader;
 
-import org.springframework.core.io.Resource;
-
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.List;
 
 public class FilesetXMLChangeSetFileProvider implements ChangeSetFileProvider {
-    private Resource file;
 
-    public FilesetXMLChangeSetFileProvider(Resource file) {
+    private File file;
+
+    public FilesetXMLChangeSetFileProvider(File file) {
         this.file = file;
     }
 
-    public List<Resource> getChangeSetFiles() {
+    public List<File> getChangeSetFiles() throws URISyntaxException {
         return new FilesetXMLReader().getFiles(file);
     }
 }

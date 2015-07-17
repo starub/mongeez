@@ -12,6 +12,11 @@
 
 package org.mongeez;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mongeez.commands.ChangeSet;
 import org.mongeez.commands.Script;
 import org.mongeez.reader.ChangeSetFileProvider;
@@ -19,16 +24,10 @@ import org.mongeez.reader.ChangeSetReaderFactory;
 import org.mongeez.reader.FilesetXMLChangeSetFileProvider;
 import org.mongeez.validation.ChangeSetsValidator;
 import org.mongeez.validation.DefaultChangeSetsValidator;
-
-import com.mongodb.Mongo;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.mongodb.Mongo;
 
 public class Mongeez {
     private final static Logger logger = LoggerFactory.getLogger(Mongeez.class);
@@ -40,17 +39,17 @@ public class Mongeez {
     private ChangeSetsValidator changeSetsValidator = new DefaultChangeSetsValidator();
     private String context = null;
 
-    public void process() {
+    public void process() throws URISyntaxException {
         List<ChangeSet> changeSets = getChangeSets();
         new ChangeSetExecutor(mongo, dbName, context, auth).execute(changeSets);
     }
 
-    private List<ChangeSet> getChangeSets() {
-        List<Resource> files = changeSetFileProvider.getChangeSetFiles();
+    private List<ChangeSet> getChangeSets() throws URISyntaxException {
+        List<File> files = changeSetFileProvider.getChangeSetFiles();
         List<ChangeSet> changeSets = new ArrayList<ChangeSet>();
 
         ChangeSetReaderFactory readerFactory = ChangeSetReaderFactory.getInstance();
-        for (Resource file : files) {
+        for (File file : files) {
             changeSets.addAll(readerFactory.getChangeSetReader(file).getChangeSets(file));
         }
         logChangeSets(changeSets);
@@ -64,7 +63,7 @@ public class Mongeez {
                 logger.trace("Changeset");
                 logger.trace("id: " + changeSet.getChangeId());
                 logger.trace("author: " + changeSet.getAuthor());
-                if (! "".equals(changeSet.getContexts())) {
+                if (!"".equals(changeSet.getContexts())) {
                     logger.trace("contexts: {}", changeSet.getContexts());
                 }
                 for (Script command : changeSet.getCommands()) {
@@ -92,9 +91,10 @@ public class Mongeez {
     }
 
     /**
-     * Convenience method to set the ChangeSetFileProvider to an XML fileset based on the specified file
+     * Convenience method to set the ChangeSetFileProvider to an XML fileset based on the specified
+     * file
      */
-    public void setFile(Resource file) {
+    public void setFile(File file) {
         setChangeSetFileProvider(new FilesetXMLChangeSetFileProvider(file));
     }
 

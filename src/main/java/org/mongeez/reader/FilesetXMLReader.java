@@ -12,24 +12,26 @@
 
 package org.mongeez.reader;
 
-import org.mongeez.commands.ChangeFile;
-import org.mongeez.commands.ChangeFileSet;
-
-import org.apache.commons.digester3.Digester;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
-
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.digester3.Digester;
+import org.mongeez.commands.ChangeFile;
+import org.mongeez.commands.ChangeFileSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FilesetXMLReader {
 
     private static final Logger logger = LoggerFactory.getLogger(FilesetXMLReader.class);
 
-    public List<Resource> getFiles(Resource file) {
-        List<Resource> files = new ArrayList<Resource>();
+    public List<File> getFiles(File file) throws URISyntaxException {
+        List<File> files = new ArrayList<File>();
 
         try {
             Digester digester = new Digester();
@@ -41,17 +43,19 @@ public class FilesetXMLReader {
             digester.addSetProperties("changeFiles/file");
             digester.addSetNext("changeFiles/file", "add");
 
-            logger.info("Parsing XML Fileset file {}", file.getFilename());
-            ChangeFileSet changeFileSet = (ChangeFileSet) digester.parse(file.getInputStream());
+            logger.info("Parsing XML Fileset file {}", file.getName());
+            FileInputStream fis = new FileInputStream(file);
+            ChangeFileSet changeFileSet = (ChangeFileSet) digester.parse(fis);
+            fis.close();
+            
             if (changeFileSet != null) {
                 logger.info("Num of changefiles found " + changeFileSet.getChangeFiles().size());
                 for (ChangeFile changeFile : changeFileSet.getChangeFiles()) {
-                    files.add(file.createRelative(changeFile.getPath()));
+                    files.add(Paths.get(ClassLoader.getSystemResource(changeFile.getPath()).toURI()).toFile());
                 }
-            }
-            else {
+            } else {
                 logger.error("The file {} doesn't seem to contain a changeFiles declaration. Are you "
-                        + "using the correct file to initialize Mongeez?", file.getFilename());
+                        + "using the correct file to initialize Mongeez?", file.getName());
             }
         } catch (IOException e) {
             logger.error("IOException", e);

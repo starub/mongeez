@@ -14,14 +14,15 @@ package org.mongeez;
 
 import static org.testng.Assert.assertEquals;
 
-import com.mongodb.DB;
-import com.mongodb.DBCursor;
-import com.mongodb.Mongo;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 
 import org.mongeez.validation.ValidationException;
-import org.springframework.core.io.ClassPathResource;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import com.mongodb.DB;
+import com.mongodb.Mongo;
 
 @Test
 public class MongeezTest {
@@ -37,9 +38,9 @@ public class MongeezTest {
         db.dropDatabase();
     }
 
-    private Mongeez create(String path) {
+    private Mongeez create(String path) throws URISyntaxException {
         Mongeez mongeez = new Mongeez();
-        mongeez.setFile(new ClassPathResource(path));
+        mongeez.setFile(Paths.get(ClassLoader.getSystemResource(path).toURI()).toFile());
         mongeez.setMongo(mongo);
         mongeez.setDbName(dbName);
         return mongeez;

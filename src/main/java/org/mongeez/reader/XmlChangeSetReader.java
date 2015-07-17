@@ -12,18 +12,18 @@
 
 package org.mongeez.reader;
 
-import org.mongeez.commands.ChangeSet;
-import org.mongeez.commands.ChangeSetList;
-import org.mongeez.commands.Script;
-
-import org.apache.commons.digester3.Digester;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
-
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.digester3.Digester;
+import org.mongeez.commands.ChangeSet;
+import org.mongeez.commands.ChangeSetList;
+import org.mongeez.commands.Script;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class XmlChangeSetReader implements ChangeSetReader {
     private static final Logger logger = LoggerFactory.getLogger(XmlChangeSetReader.class);
@@ -46,21 +46,23 @@ public class XmlChangeSetReader implements ChangeSetReader {
     }
 
     @Override
-    public boolean supports(Resource file) {
+    public boolean supports(File file) {
         return true;
     }
 
     @Override
-    public List<ChangeSet> getChangeSets(Resource file) {
+    public List<ChangeSet> getChangeSets(File file) {
         List<ChangeSet> changeSets = new ArrayList<ChangeSet>();
 
         try {
-            logger.info("Parsing XML Change Set File {}", file.getFilename());
-            ChangeSetList changeFileSet = (ChangeSetList) digester.parse(file.getInputStream());
+            logger.info("Parsing XML Change Set File {}", file.getName());
+            FileInputStream fis = new FileInputStream(file);
+            ChangeSetList changeFileSet = (ChangeSetList) digester.parse(fis);
+            fis.close();
             if (changeFileSet == null) {
-                logger.warn("Ignoring change file {}, the parser returned null. Please check your formatting.", file.getFilename());
-            }
-            else {
+                logger.warn("Ignoring change file {}, the parser returned null. Please check your formatting.",
+                        file.getName());
+            } else {
                 for (ChangeSet changeSet : changeFileSet.getList()) {
                     ChangeSetReaderUtil.populateChangeSetResourceInfo(changeSet, file);
                 }

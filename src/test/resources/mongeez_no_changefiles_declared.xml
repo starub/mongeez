@@ -1,5 +1,3 @@
-<!--
-A mongeez setup with valid xml that does not contain changeFiles root element. Not normal, but causes an NPE
--->
+<!-- A mongeez setup with valid xml that does not contain changeFiles root element. Not normal, but causes an NPE -->
 <test>
 </test>
