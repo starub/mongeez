@@ -1,8 +1,15 @@
 language: java
 jdk:
-  - oraclejdk8
-  - oraclejdk7
-  - openjdk7
-  - openjdk6
+- oraclejdk8
+- oraclejdk7
+- openjdk7
+- openjdk6
 services:
-  - mongodb
+- mongodb
+deploy:
+  provider: releases
+  api_key:
+    secure: HR5hzVrpEKtKF+79rTjo3FcZ/vRKNAOrOI+n43pTCbBJjkhUAsmahqBXtTQIk8kc6IAXZT6KRvddm9U6Ncos/5lhdsUNo+jju4o106lSoUCfkLqpGOWIbhygBii61NlQqXbZthZJws+0z2Jo5VUGrpnQZG1ZVJzZTlMFM34eP+rBqVAlpAIXRYVe8Jnjw5Pt9jxU7zEB5fyNIB8+LR+0tcFnwONopdsoLitpsZNFoyKmS0VHYw30Dyrn1wBfW8ybBopq8pEsPQD/xTits7g4XyAaInVpBRKfpfjE2+Z0KKAWv+ON33JIv5maMKte+XIt2Z76CszMVPYJiPPRDzEPPDBnDalcNsR1gcIjBkdVR7JWh4iDP/A96ScHfttmLbbKWwa8BaAO5aeaYrt7YFXW6gmMKFmbLOurqyWqC8Vdk3TM8qE6p6FX1gZ3LtKE7O79tPmt1JH2U26vZNpGbAp0JRT3/zb9QY1zPWv/SXUUPgfI5rcIPkzBLt/lk2p5Zo2Eg5ZhXgt8aRZurSUzoI84hhEU0cMa8SRFczF+an+SV+3gyzagwtqbGVs2jpULtQXZVvPFKH1Y8Hud6FAki4MC4fCntXJMYYmpJ4nw5iQTjwFyB9tz98uTaUI4wbFxQKZkiCCnceo8H9R/sYPe0zcvSGHxROcG+sSh8BSZOUzefm0=
+  file: target/mongeez-0.9.5-SNAPSHOT.jar
+  on:
+    repo: starub/mongeez
