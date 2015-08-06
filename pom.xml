@@ -10,12 +10,12 @@
 
 	<groupId>org.mongeez</groupId>
 	<artifactId>mongeez</artifactId>
-	<version>0.9.5-SNAPSHOT</version>
+	<version>0.9.6</version>
 	<packaging>jar</packaging>
 
 	<name>Mongeez</name>
 	<description>An opensource project for mongodb change management</description>
-	<url>http://github.com/secondmarket/mongeez</url>
+	<url>https://github.com/starub/mongeez</url>
 
 	<licenses>
 		<license>
